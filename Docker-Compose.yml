@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  backend:
+    build: ./server
+    volumes:
+      - ./server:/usr/src/server
+    ports:
+      - 7000:7000
+    environment:
+      - DATABASE_URL=mysql://user:password@localhost:3306/projet
+    depends_on:
+      - db
+
+  frontend:
+    build: ./client
+    volumes:
+      - ./client:/usr/src/app
+    ports:
+      - 19000:19000
+
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: " "
+      MYSQL_DATABASE: projet
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ""
+    volumes:
+      - ./db/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: localhost
+      PMA_USER: root
+      PMA_PASSWORD: " "
+      PMA_PORT: 3306
+    ports:
+      - 8080:80
+    depends_on:
+      - db
